@@ -50,20 +50,12 @@ struct Strategy {
 
 impl Strategy {
     fn value_1(&self) -> i32 {
-        const OUTCOME: [[i32; 3]; 3] = [
-            [4, 8, 3],
-            [1, 5, 9],
-            [7, 2, 6],
-        ];
+        const OUTCOME: [[i32; 3]; 3] = [[4, 8, 3], [1, 5, 9], [7, 2, 6]];
         OUTCOME[self.opponent as usize][self.response as usize]
     }
 
     fn value_2(&self) -> i32 {
-        const OUTCOME: [[i32; 3]; 3] = [
-            [3, 4, 8],
-            [1, 5, 9],
-            [2, 6, 7],
-        ];
+        const OUTCOME: [[i32; 3]; 3] = [[3, 4, 8], [1, 5, 9], [2, 6, 7]];
         OUTCOME[self.opponent as usize][self.response as usize]
     }
 }
@@ -74,8 +66,14 @@ impl FromStr for Strategy {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut actions = s.split(' ');
         Ok(Self {
-            opponent: actions.next().ok_or_else(|| anyhow!("Missing opponent action"))?.parse()?,
-            response: actions.next().ok_or_else(|| anyhow!("Missing response action"))?.parse()?,
+            opponent: actions
+                .next()
+                .ok_or_else(|| anyhow!("Missing opponent action"))?
+                .parse()?,
+            response: actions
+                .next()
+                .ok_or_else(|| anyhow!("Missing response action"))?
+                .parse()?,
         })
     }
 }

@@ -61,9 +61,7 @@ where
             .split(b',')
             .map(|x| Ok(from_utf8(&x?)?.parse()?))
             .collect::<Result<_, Error>>()?;
-        Ok(Self {
-            values,
-        })
+        Ok(Self { values })
     }
 }
 
@@ -85,9 +83,7 @@ where
                 groups.last_mut().unwrap().push(line.parse()?);
             }
         }
-        Ok(Grouped {
-            groups,
-        })
+        Ok(Grouped { groups })
     }
 }
 
@@ -132,10 +128,8 @@ where
     ))
 }
 
-pub fn main<I, P1, P2>(
-    solve_part_one: impl FnOnce(&I) -> P1,
-    solve_part_two: impl FnOnce(&I) -> P2,
-) where
+pub fn main<I, P1, P2>(solve_part_one: impl FnOnce(&I) -> P1, solve_part_two: impl FnOnce(&I) -> P2)
+where
     I: Input,
     P1: Display,
     P2: Display,

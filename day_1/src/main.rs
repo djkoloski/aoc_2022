@@ -5,7 +5,11 @@ fn part_one(input: &Grouped<i32>) -> i32 {
 }
 
 fn part_two(input: &Grouped<i32>) -> i32 {
-    let mut totals = input.groups.iter().map(|g| g.iter().sum()).collect::<Vec<_>>();
+    let mut totals = input
+        .groups
+        .iter()
+        .map(|g| g.iter().sum())
+        .collect::<Vec<_>>();
     totals.sort();
     totals.iter().rev().take(3).sum()
 }
