@@ -13,6 +13,14 @@ pub trait Input: Sized {
     fn parse<R: BufRead>(reader: R) -> Result<Self>;
 }
 
+impl Input for String {
+    fn parse<R: BufRead>(mut reader: R) -> Result<Self> {
+        let mut result = String::new();
+        reader.read_to_string(&mut result)?;
+        Ok(result)
+    }
+}
+
 impl<T: FromStr> Input for Vec<T>
 where
     T::Err: Display,
