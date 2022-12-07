@@ -43,7 +43,7 @@ impl FromStr for Instruction {
             .next()
             .ok_or_else(|| anyhow!("Missing to in instruction"))?
             .parse()?;
-        Ok(Self { amount, from: from, to })
+        Ok(Self { amount, from, to })
     }
 }
 
@@ -58,7 +58,9 @@ impl solve::Input for Input {
 
         let mut stacks = Vec::new();
         'parse_stacks: loop {
-            let line = lines.next().ok_or_else(|| anyhow!("Expected stack line"))??;
+            let line = lines
+                .next()
+                .ok_or_else(|| anyhow!("Expected stack line"))??;
             let bytes = line.as_bytes();
 
             let stack_count = (bytes.len() + 1) / 4;
@@ -68,9 +70,9 @@ impl solve::Input for Input {
 
             for i in 0..stack_count {
                 let segment = &bytes[4 * i..4 * i + 3];
-                if segment[0] == '[' as u8 {
+                if segment[0] == b'[' {
                     stacks[i].push(segment[1]);
-                } else if segment[1] != ' ' as u8 {
+                } else if segment[1] != b' ' {
                     break 'parse_stacks;
                 }
             }
@@ -80,11 +82,14 @@ impl solve::Input for Input {
             stack.reverse();
         }
 
-        assert!(lines.next().ok_or_else(|| anyhow!("Expected empty line between stacks and instructions"))??.is_empty());
+        assert!(lines
+            .next()
+            .ok_or_else(|| anyhow!("Expected empty line between stacks and instructions"))??
+            .is_empty());
 
         let mut instructions = Vec::new();
 
-        while let Some(line) = lines.next() {
+        for line in lines {
             instructions.push(line?.parse()?);
         }
 
