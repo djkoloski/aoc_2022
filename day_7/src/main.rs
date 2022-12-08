@@ -100,6 +100,12 @@ impl FileSystem {
     }
 }
 
+impl Default for FileSystem {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub struct Directory {
     subdirs: HashMap<String, usize>,
     files: HashMap<String, usize>,
