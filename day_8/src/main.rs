@@ -1,4 +1,7 @@
-use std::{io::BufRead, fmt::{Display, self}};
+use std::{
+    fmt::{self, Display},
+    io::BufRead,
+};
 
 use anyhow::Result;
 use solve::Input;
@@ -79,7 +82,10 @@ struct Visibility {
 
 impl Visibility {
     fn min(&self) -> u8 {
-        u8::min(u8::min(self.north, self.south), u8::min(self.east, self.west))
+        u8::min(
+            u8::min(self.north, self.south),
+            u8::min(self.east, self.west),
+        )
     }
 }
 
@@ -102,8 +108,12 @@ fn solve_part_one(input: &Grid<u8>) -> usize {
     }
     for y in 1..height {
         for x in 0..width {
-            visibility.get_mut(x, y).north = u8::max(*input.get(x, y - 1), visibility.get(x, y - 1).north);
-            visibility.get_mut(x, height - y - 1).south = u8::max(*input.get(x, height - y), visibility.get(x, height - y).south);
+            visibility.get_mut(x, y).north =
+                u8::max(*input.get(x, y - 1), visibility.get(x, y - 1).north);
+            visibility.get_mut(x, height - y - 1).south = u8::max(
+                *input.get(x, height - y),
+                visibility.get(x, height - y).south,
+            );
         }
     }
     // east / west
@@ -113,8 +123,10 @@ fn solve_part_one(input: &Grid<u8>) -> usize {
     }
     for x in 1..width {
         for y in 0..height {
-            visibility.get_mut(x, y).west = u8::max(*input.get(x - 1, y), visibility.get(x - 1, y).west);
-            visibility.get_mut(width - x - 1, y).east = u8::max(*input.get(width - x, y), visibility.get(width - x, y).east);
+            visibility.get_mut(x, y).west =
+                u8::max(*input.get(x - 1, y), visibility.get(x - 1, y).west);
+            visibility.get_mut(width - x - 1, y).east =
+                u8::max(*input.get(width - x, y), visibility.get(width - x, y).east);
         }
     }
 
