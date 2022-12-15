@@ -1,6 +1,6 @@
-use std::{str::FromStr, ops::Add, collections::HashSet};
+use std::{collections::HashSet, ops::Add, str::FromStr};
 
-use anyhow::{Error, Context};
+use anyhow::{Context, Error};
 
 #[derive(Clone, Copy, Hash, PartialEq, Eq)]
 struct Point {
@@ -86,13 +86,16 @@ impl Polyline {
     }
 
     fn overlaps(&self, point: Point) -> bool {
-        self.points.iter().zip(self.points.iter().skip(1)).any(|(a, b)| {
-            let bounding_box = Rect {
-                lower: Point::min(*a, *b),
-                upper: Point::max(*a, *b),
-            };
-            bounding_box.contains(point)
-        })
+        self.points
+            .iter()
+            .zip(self.points.iter().skip(1))
+            .any(|(a, b)| {
+                let bounding_box = Rect {
+                    lower: Point::min(*a, *b),
+                    upper: Point::max(*a, *b),
+                };
+                bounding_box.contains(point)
+            })
     }
 }
 
@@ -101,12 +104,20 @@ impl FromStr for Polyline {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(Self {
-            points: s.split(" -> ").map(|p| p.parse()).collect::<Result<Vec<_>, _>>()?,
+            points: s
+                .split(" -> ")
+                .map(|p| p.parse())
+                .collect::<Result<Vec<_>, _>>()?,
         })
     }
 }
 
-fn try_move(point: Point, sand: &HashSet<Point>, lines: &[Polyline], floor: Option<i32>) -> Option<Point> {
+fn try_move(
+    point: Point,
+    sand: &HashSet<Point>,
+    lines: &[Polyline],
+    floor: Option<i32>,
+) -> Option<Point> {
     if sand.contains(&point) {
         None
     } else if lines.iter().any(|l| l.overlaps(point)) {
@@ -119,14 +130,15 @@ fn try_move(point: Point, sand: &HashSet<Point>, lines: &[Polyline], floor: Opti
 }
 
 fn solve_part_one(input: &Vec<Polyline>) -> usize {
-    let bounds = input.iter().map(|p| Polyline::bounding_box(p).unwrap()).reduce(Rect::merge).unwrap();
+    let bounds = input
+        .iter()
+        .map(|p| Polyline::bounding_box(p).unwrap())
+        .reduce(Rect::merge)
+        .unwrap();
     let mut sand = HashSet::new();
 
     loop {
-        let mut drop = Point {
-            x: 500,
-            y: 0,
-        };
+        let mut drop = Point { x: 500, y: 0 };
         while bounds.could_contain(drop) {
             if let Some(next) = try_move(drop + Point::DOWN, &sand, &input, None) {
                 drop = next;
@@ -148,15 +160,16 @@ fn solve_part_one(input: &Vec<Polyline>) -> usize {
 }
 
 fn solve_part_two(input: &Vec<Polyline>) -> usize {
-    let bounds = input.iter().map(|p| Polyline::bounding_box(p).unwrap()).reduce(Rect::merge).unwrap();
+    let bounds = input
+        .iter()
+        .map(|p| Polyline::bounding_box(p).unwrap())
+        .reduce(Rect::merge)
+        .unwrap();
     let floor = Some(bounds.upper.y + 2);
     let mut sand = HashSet::new();
 
     while !sand.contains(&Point { x: 500, y: 0 }) {
-        let mut drop = Point {
-            x: 500,
-            y: 0,
-        };
+        let mut drop = Point { x: 500, y: 0 };
         loop {
             if let Some(next) = try_move(drop + Point::DOWN, &sand, &input, floor) {
                 drop = next;

@@ -116,11 +116,15 @@ fn solve_part_one(input: &Input) -> usize {
 }
 
 fn solve_part_two(input: &Input) -> usize {
-    let mut packets = input.pairs.iter().cloned().fold(Vec::new(), |mut packets, (l, r)| {
-        packets.push(l);
-        packets.push(r);
-        packets
-    });
+    let mut packets = input
+        .pairs
+        .iter()
+        .cloned()
+        .fold(Vec::new(), |mut packets, (l, r)| {
+            packets.push(l);
+            packets.push(r);
+            packets
+        });
     let dividers = [
         Value::List(vec![Value::List(vec![Value::Literal(2)])]),
         Value::List(vec![Value::List(vec![Value::Literal(6)])]),
@@ -130,7 +134,10 @@ fn solve_part_two(input: &Input) -> usize {
     }
     packets.sort();
 
-    dividers.iter().map(|d| packets.iter().position(|p| p == d).unwrap() + 1).product()
+    dividers
+        .iter()
+        .map(|d| packets.iter().position(|p| p == d).unwrap() + 1)
+        .product()
 }
 
 fn main() {
