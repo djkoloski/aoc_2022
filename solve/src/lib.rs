@@ -142,7 +142,13 @@ where
     P1: Display,
     P2: Display,
 {
-    let path = env::args().nth(1).expect("missing input file path");
+    let bin_path = env::args().nth(0).expect("missing binary path");
+    let path = env::args().nth(1).unwrap_or_else(|| {
+        let path = Path::new(&bin_path);
+        let day = path.file_stem().unwrap().to_str().unwrap();
+        format!("{day}/test.input")
+    });
+    println!("opening {path}");
     let (part_one, part_two) =
         solve(path.as_ref(), solve_part_one, solve_part_two).expect("failed to solve problem");
 
